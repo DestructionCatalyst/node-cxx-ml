@@ -1,0 +1,15 @@
+{
+  "name": "ml",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@fast-csv/parse": "^5.0.5",
+    "bindings": "~1.5.0",
+    "node-addon-api": "^8.1.0"
+  },
+  "gypfile": true
+}
