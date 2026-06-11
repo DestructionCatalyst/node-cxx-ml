@@ -35,12 +35,7 @@ namespace node {
 
         ml::Matrix means = ml::Means(*X->matrix);
 
-        Napi::Object instance = Matrix::EmptyWrapper(env);
-        Matrix* result = Napi::ObjectWrap<Matrix>::Unwrap(instance);
-
-        result->matrix = new ml::Matrix(means);
-
-        return instance;
+        return Matrix::Wrap(env, means);
     }
 
     Napi::Value Covariation(const Napi::CallbackInfo& info) {
@@ -62,12 +57,7 @@ namespace node {
 
         ml::Matrix cov = ml::Covariation(*X->matrix);
 
-        Napi::Object instance = Matrix::EmptyWrapper(env);
-        Matrix* result = Napi::ObjectWrap<Matrix>::Unwrap(instance);
-
-        result->matrix = new ml::Matrix(cov);
-
-        return instance;
+        return Matrix::Wrap(env, cov);
     }
 
     Napi::Value Correlation(const Napi::CallbackInfo& info) {
@@ -90,14 +80,9 @@ namespace node {
         try {
             ml::Matrix corr = ml::Correlation(*X->matrix);
 
-            Napi::Object instance = Matrix::EmptyWrapper(env);
-            Matrix* result = Napi::ObjectWrap<Matrix>::Unwrap(instance);
-
-            result->matrix = new ml::Matrix(corr);
-
-            return instance;
+            return Matrix::Wrap(env, corr);
         }
-        catch (std::out_of_range exception) {
+        catch (std::logic_error exception) {
             Napi::Error::New(env, exception.what()).ThrowAsJavaScriptException();
 
             return env.Undefined();

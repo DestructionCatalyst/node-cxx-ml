@@ -1,5 +1,5 @@
 const { Matrix, OLS, trainTestSplit, metrics, addConstantVariable } = require('bindings')('ml');
-const { correlation } = metrics.dataset;
+const { means, correlation } = metrics.dataset;
 
 const csv = require('@fast-csv/parse');
 
@@ -16,7 +16,7 @@ csv.parseFile('datasets/housing.csv', { headers: true })
             parseFloat(row.longitude),
             parseFloat(row.latitude),
             parseFloat(row.housing_median_age),
-            parseFloat(row.total_rooms/* / row.households*/),
+            parseFloat(row.total_rooms / row.households),
             parseFloat(row.total_bedrooms), // EXCLUDED
             parseFloat(row.households),
             parseFloat(row.population/* / row.households*/),
@@ -56,7 +56,7 @@ csv.parseFile('datasets/housing.csv', { headers: true })
 
         X = addConstantVariable(X);
 
-        // console.log(X.toArray())
+        console.log('means', means(X).toArray())
 
         let { xTrain, xTest, yTrain, yTest } = trainTestSplit({
             X, y, testSize: 0.2, seed: 1234

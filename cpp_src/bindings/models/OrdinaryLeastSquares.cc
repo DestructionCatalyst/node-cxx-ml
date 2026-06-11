@@ -81,11 +81,6 @@ namespace node {
 
         ml::Matrix yPred = this->model->Predict(*X->matrix);
 
-        Napi::Object instance = Matrix::EmptyWrapper(env);
-        Matrix* result = Napi::ObjectWrap<Matrix>::Unwrap(instance);
-
-        result->matrix = new ml::Matrix(yPred);
-
-        return instance;
+        return Matrix::Wrap(env, yPred);
      }
 }

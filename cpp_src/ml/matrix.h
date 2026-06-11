@@ -21,6 +21,7 @@ namespace ml {
     public:
         Matrix(size_t nRows, size_t nCols);
         Matrix(Matrix& other);
+        // TODO move constructor
         // Factory methods
         static Matrix* Zeros(size_t nRows, size_t nCols);
         static Matrix* Identity(size_t dim);

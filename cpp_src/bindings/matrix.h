@@ -26,6 +26,8 @@ namespace node {
       Napi::Value ToArray(const Napi::CallbackInfo& info);
 
       static Napi::Object EmptyWrapper(Napi::Env env);
+      static Napi::Object Wrap(Napi::Env env, ml::Matrix);
+//       static Matrix* FromParams(const Napi::CallbackInfo& info, size_t index);
 
       ~Matrix();
 

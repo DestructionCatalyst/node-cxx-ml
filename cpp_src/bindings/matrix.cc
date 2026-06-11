@@ -216,6 +216,15 @@ namespace node {
         return result;
     }
 
+    Napi::Object Matrix::Wrap(Napi::Env env, ml::Matrix matrix) {
+        Napi::Object instance = Matrix::EmptyWrapper(env);
+        Matrix* result = Napi::ObjectWrap<Matrix>::Unwrap(instance);
+
+        result->matrix = new ml::Matrix(matrix);
+
+        return instance;
+    }
+
     Matrix* Matrix::OtherMatrixFromParams(const Napi::CallbackInfo& info) {
         Napi::Env env = info.Env();
 
