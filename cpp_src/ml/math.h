@@ -4,7 +4,7 @@
 #include <cmath>
 
 namespace ml {
-    const float EPSILON = 0.0000002f;
+    const float EPSILON = 0.000001f;
 
     size_t random(size_t min, size_t max);
     size_t random(size_t min, size_t max, size_t seed);

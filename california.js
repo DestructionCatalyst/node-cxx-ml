@@ -1,4 +1,5 @@
 const { Matrix, OLS, trainTestSplit, metrics, addConstantVariable } = require('bindings')('ml');
+const { correlation } = metrics.dataset;
 
 const csv = require('@fast-csv/parse');
 
@@ -15,27 +16,27 @@ csv.parseFile('datasets/housing.csv', { headers: true })
             parseFloat(row.longitude),
             parseFloat(row.latitude),
             parseFloat(row.housing_median_age),
-            parseFloat(row.total_rooms),
-            parseFloat(row.total_bedrooms),
-            parseFloat(row.population),
+            parseFloat(row.total_rooms/* / row.households*/),
+            parseFloat(row.total_bedrooms), // EXCLUDED
             parseFloat(row.households),
+            parseFloat(row.population/* / row.households*/),
             parseFloat(row.median_income),
         );
 
         if (row.ocean_proximity === 'NEAR BAY') {
-            matrixRow.push(1, 0, 0, 0);
+            matrixRow.push(1, 0, 0/*, 0*/);
         }
-        else if (row.ocean_proximity === 'NEAR OCEAN') {
-            matrixRow.push(0, 1, 0, 0);
+        else if (row.ocean_proximity === 'NEAR OCEAN' || row.ocean_proximity === 'ISLAND') {
+            matrixRow.push(0, 1, 0/*, 0*/);
         }
         else if (row.ocean_proximity === '<1H OCEAN') {
-            matrixRow.push(0, 0, 1, 0);
+            matrixRow.push(0, 0, 1/*, 0*/);
         }
-        else if (row.ocean_proximity === 'ISLAND') {
-            matrixRow.push(0, 0, 0, 1);
-        }
+        // else if (row.ocean_proximity === 'ISLAND') {
+        //     matrixRow.push(0, 0, 0, 1);
+        // }
         else {
-            matrixRow.push(0, 0, 0, 0);
+            matrixRow.push(0, 0, 0/*, 0*/);
         }
 
         matrixRow.push(parseFloat(row.median_house_value));
@@ -46,17 +47,21 @@ csv.parseFile('datasets/housing.csv', { headers: true })
         console.log(`Parsed ${rowCount} rows`);
 
         let data = Matrix.fromArray(dataArray);
+
         const lastColumnIndex = data.getColCount() - 1;
         let X = data.project({ excludeCols: [4, lastColumnIndex] });
         let y = data.project({ cols: [lastColumnIndex] });
 
+        console.log(correlation(X).toArray().map(row => row.map(val => Math.round(val * 100) / 100)));
+
         X = addConstantVariable(X);
 
-        console.log(X.toArray())
+        // console.log(X.toArray())
 
         let { xTrain, xTest, yTrain, yTest } = trainTestSplit({
             X, y, testSize: 0.2, seed: 1234
         });
+
 
         const ols = new OLS();
 
@@ -73,7 +78,7 @@ csv.parseFile('datasets/housing.csv', { headers: true })
             .multiply(diff)
             .multiplyBy(1 / diff.getRowCount()).toArray()
 
-        console.log(mse);
+        // console.log(mse);
 
         console.log(metrics.regression.meanSquaredError(yTest, pred));
         console.log(metrics.regression.meanAbsoluteError(yTest, pred));

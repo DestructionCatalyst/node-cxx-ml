@@ -195,8 +195,8 @@ namespace ml {
             size_t nonZeroRow = -1u;
 
             for (size_t j = i; j < this->GetDim(); j++) {
+//                 std::cout << "pass " << i << " row " << j << ' ' << fabs(gaussTarget.first[j, i]) << ' ' << (fabs(gaussTarget.first[j, i]) > EPSILON) << '\n';
                 if (fabs(gaussTarget.first[j, i]) > EPSILON) {
-//                     std::cout << "row " << j << '\n';
                     nonZeroRow = j;
                     break;
                 }

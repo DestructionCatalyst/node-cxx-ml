@@ -52,7 +52,12 @@ namespace node {
 
         Matrix* y = Napi::ObjectWrap<Matrix>::Unwrap(yJs);
 
-        this->model->Fit((*X->matrix), (*y->matrix));
+        try {
+            this->model->Fit((*X->matrix), (*y->matrix));
+        }
+        catch (std::invalid_argument exception) {
+            Napi::Error::New(env, exception.what()).ThrowAsJavaScriptException();
+        }
 
         return env.Undefined();
     }
